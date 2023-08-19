@@ -1,0 +1,59 @@
+﻿@page "/clients/{Id:int}/numberroutes"
+
+@attribute [Authorize]
+
+@using PbxHub.Admin.Components.NumberRoutes
+@using PbxHub.Common
+
+@inject INumberRouteService NumberRouteService
+
+<MudGrid>
+    <MudItem xs="4">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add">
+            <MudLink Href="@NewURL" Underline="Underline.None" Color="Color.Info">New Number</MudLink>
+        </MudButton>
+    </MudItem>
+    <MudItem xs="4" />
+    <MudItem xs="4">
+        <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    </MudItem>
+    <MudItem xs="12">
+        <NumberRouteList NumberRoutes="@NumberRoutes" SearchText="@SearchText" />
+    </MudItem>
+</MudGrid>
+
+@code 
+{
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<NumberRoute> NumberRoutes { get; set; }
+    private string NewURL { get; set; }
+    private string SearchText { get; set; }
+
+    protected override void OnInitialized()
+    {
+        @*Layout.TopHeader = "Phone Numbers";*@
+        NewURL = "/numberroutes/new/" + Id;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            NumberRoutes = (await NumberRouteService.GetNumberRoutes(Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            NumberRoutes = null;
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

@@ -1,0 +1,72 @@
+﻿@using PbxHub.Admin.Components.PopUpBoxes
+@using PbxHub.Common
+
+@if (NumberRouteModel != null && NumberRouteModel.numberRouteId > 0)
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@NumberRouteModel.phoneNumber</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">New Number Route</MudText>
+}
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+
+@if (NumberRouteModel != null)
+{
+    <MudCard Style="width:100%;">
+        <MudCardContent>
+            <MudForm>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.phoneNumber" Label="Phone Number" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.callerId" Label="Caller ID" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.userFullName" Label="User" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.destinationType" Label="Destination Type" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.destinationName" Label="Destination Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.description" Label="Description" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="12" md="6">
+                        <MudTextField @bind-Value="NumberRouteModel.callerIdPoolName" Label="CallerID Pool" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudGrid Spacing="6" Justify="Justify.Center">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSaveHandler())>
+                        Submit Changes
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Clear" OnClick=@(() => OnDiscardHandler())>
+                        Discard Changes
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardActions>
+    </MudCard>
+}

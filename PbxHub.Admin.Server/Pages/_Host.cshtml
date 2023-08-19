@@ -1,0 +1,66 @@
+﻿@page "/"
+@namespace PbxHub.Admin.Server.Pages
+@using PbxHub.Admin.App
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PbxHub.Admin.Server</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
+    <link rel="stylesheet" href="css/fabric-icons-inline.css" /> <!--These are icons for nav not automatically included in the above css.-->
+    <link rel="stylesheet" href="PbxHub.Admin.Server.styles.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/fontawesome.css" rel="stylesheet" />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <app>
+        <environment include="Staging,Production">
+            <component render-mode="ServerPrerendered" type="typeof(App)" />
+        </environment>
+        <environment include="Development">
+            <component render-mode="Server" type="typeof(App)" />
+        </environment>
+    </app>
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                var app = $("app");
+                var div = app[0].children;
+                var ltr = div[1];
+                ltr.setAttribute("style", "width: 100%");
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

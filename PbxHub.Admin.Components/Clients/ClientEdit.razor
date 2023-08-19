@@ -1,0 +1,116 @@
+﻿@if (ClientModel != null)
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@ClientModel.clientName</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">Client Name</MudText>
+}
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+
+@if (ClientModel != null)
+{
+    <MudCard Style="width:100%;">
+        <MudCardContent>
+            <MudForm>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.clientName" Label="Client Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.administratorEmail" Label="Admin Email" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.entryDate" Label="Entry Date" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.dedicatedPbx" Label="Dedicated PBX" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.callStatusPostback" Label="Call Status Postback" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.agentStatusPostback" Label="Agent Status Postback" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.callReportingHistory" Label="Call Reporting History" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.callRecordingHistory" Label="Call Recording History" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.maxDialerCpr" Label="Max Dial Cpr" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.timeBetweenEachDialerQueryInSeconds" Label="Time Between Each DialQueue" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.parentClient" Label="Parent Client" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.advancedUsers" Label="Advanced Users" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.midLevelUsers" Label="Mid Level Users" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="ClientModel.basicLevelUsers" Label="Basic Level Users" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="3" />
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.tts" Label="TTS" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.sms" Label="Messaging" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.keyEnabled" Label="Key Enabled" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="3" />
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="3" />
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.reporting" Label="Reporting" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.dialer" Label="Dialer" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@ClientModel.callRecording" Label="Call Recording" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="3" />
+                </MudGrid>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudGrid Spacing="6" Justify="Justify.Center">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSaveHandler())>
+                        Submit Changes
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Clear" OnClick=@(() => OnDiscardHandler())>
+                        Discard Changes
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardActions>
+    </MudCard>
+}

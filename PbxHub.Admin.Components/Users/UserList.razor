@@ -1,0 +1,55 @@
+﻿@using PbxHub.Common
+
+@if (FilteredUsers != null)
+{
+    <MudTable Items="@FilteredUsers" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<User, object>(x=>x.fullName)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x => x.licenseTypeName)">License Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x => x.email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x => x.DidListStr)">DID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x => x.extension)">Extension</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<User, object>(x => x.recordCalls)">Call Recording</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">
+                <MudLink Href=@("/users/" + context.userId) Underline="Underline.None" Color="Color.Info">
+                    @context.fullName
+                </MudLink>
+            </MudTd>
+            <MudTd DataLabel="License Type">@context.licenseTypeName</MudTd>
+            <MudTd DataLabel="Email">@context.email</MudTd>
+            <MudTd DataLabel="DID">@context.DidListStr</MudTd>
+            <MudTd DataLabel="Extension">@context.extension</MudTd>
+            <MudTd DataLabel="Call Recording">@context.recordCalls</MudTd>
+            <MudTd>
+                <MudLink Href=@("/users/" + context.userId) Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="@(() => OnDeleteHandler(context.userId))" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <MudMessageBox @ref="MBox" Title="Delete Confirmation">
+        <MessageContent>
+            @($"Are you sure you want to delete the user \"{SelectedUser.firstName} {SelectedUser.lastName}\"?")
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete">Delete</MudButton>
+        </YesButton>
+        <CancelButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Cancel">Cancel</MudButton>
+        </CancelButton>
+    </MudMessageBox>
+}
+else
+{
+    <MudText Typo="Typo.overline" Color="Color.Info">No Data of Users</MudText>
+}

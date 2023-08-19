@@ -1,0 +1,100 @@
+﻿@page "/clients"
+
+@attribute [Authorize]
+
+@using PbxHub.Admin.Components.Clients
+@using PbxHub.Admin.Components.PopUpBoxes
+@using PbxHub.Common
+
+@inject IClientService ClientService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="2">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add">
+            <MudLink Href="/clients/new" Underline="Underline.None" Color="Color.Info">New Client</MudLink>
+        </MudButton>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4">
+        <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    </MudItem>
+    <MudItem xs="12">
+        <ClientList Clients="@Clients" OnClientDeleted="ShowConfirmPwdDlg" SearchText="@SearchText" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    private List<Client> Clients { get; set; }
+    private int SelectedId { get; set; }
+    private string SearchText = "";
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Clients";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            Clients = (await ClientService.GetAll()).ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void ShowConfirmPwdDlg(int clientId)
+    {
+        SelectedId = clientId;
+        DialogService.Show<ConfirmPasswordDlg>(null);
+    }
+
+    private async Task DeleteClient(string pwdValue)
+    {
+        try
+        {
+            if (pwdValue != null)
+            {
+                await ClientService.Delete(SelectedId);
+            }
+            Clients = (await ClientService.GetAll()).ToList();
+            Snackbar.Add("The client was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The client was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the client.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the client.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

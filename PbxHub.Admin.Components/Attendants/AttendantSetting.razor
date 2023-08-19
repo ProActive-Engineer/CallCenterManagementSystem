@@ -1,0 +1,105 @@
+﻿@if (AttendantModel != null)
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@AttendantModel.planName Settings</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">New Attendant</MudText>
+}
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+
+@if (AttendantModel != null)
+{
+    <MudCard Style="width:100%">
+        <MudCardContent>
+            <MudForm>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField @bind-Value="AttendantModel.planName" Label="Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudSelect T="string" Label="Timezone" Dense="true" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="@SelectedTimezoneName">
+                            @foreach (var timeZone in PbxTimeZones)
+                            {
+                                <MudSelectItem Value="@timeZone.standardName">@timeZone.standardName</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField Label="Open Hours 1:" Margin="Margin.Dense" Variant="Variant.Outlined" Value="@OpenHoursString(AttendantModel.openHours1)"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info"
+                                      OnAdornmentClick=@(() => ShowOpenHoursDlg("Open Hours 1", AttendantModel.openHours1, 1)) />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField Label="Open Hours 2:" Margin="Margin.Dense" Variant="Variant.Outlined" Value="@OpenHoursString(AttendantModel.openHours2)"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info"
+                                      OnAdornmentClick=@(() => ShowOpenHoursDlg("Open Hours 1", AttendantModel.openHours2, 2)) />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField Label="Open Hours 3:" Margin="Margin.Dense" Variant="Variant.Outlined" Value="@OpenHoursString(AttendantModel.openHours3)"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info"
+                                      OnAdornmentClick=@(() => ShowOpenHoursDlg("Open Hours 3", AttendantModel.openHours3, 3)) />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField @bind-Value="AttendantModel.DidListStr" Label="DID" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info" OnAdornmentClick="ShowDidListDlg" />
+                    </MudItem>
+                </MudGrid>
+                @if (TTSForGreeting)
+                {
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="5">
+                            <MudTextField @bind-Value="AttendantModel.openGreetingText" Label="Open Greeting" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
+                        </MudItem>
+                        <MudItem xs="5">
+                            <MudTextField @bind-Value="AttendantModel.closedGreetingText" Label="Closed Greeting" Margin="Margin.Dense" Variant="Variant.Outlined" Lines="5" />
+                        </MudItem>
+                    </MudGrid>
+                }
+                else
+                {
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="8">
+                            <MudTextField @bind-Value="AttendantModel.openGreetingSoundFileName" Label="Open Greeting" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="8">
+                            <MudTextField @bind-Value="AttendantModel.closedGreetingSoundFileName" Label="Closed Greeting" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                        </MudItem>
+                    </MudGrid>
+                }
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8" Class="mb-1">
+                        <MudCheckBox @bind-Checked="@TTSForGreeting" Label="TTS For Greeting" Color="Color.Info" />
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudGrid Justify="Justify.Center" Spacing="6">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSubmitHandler())>
+                        Submit Changes
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Clear" OnClick=@(() => OnCancelHandler())>
+                        Discard Changes
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardActions>
+    </MudCard>
+}

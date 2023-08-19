@@ -1,0 +1,62 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@Title</MudText>
+            </MudItem>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.Middle" Class="mt-3 separate-line" />
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Align="Align.Center">Selected Days Must be Consecutive</MudText>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="6">
+                <MudTimePicker Label="Open Time" @bind-Time="@startTimeSpan" AmPm="true" TimeEditMode="TimeEditMode.Normal" InputVariant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="6">
+                <MudTimePicker Label="Close Time" @bind-Time="@endTimeSpan" AmPm="true" TimeEditMode="TimeEditMode.Normal" InputVariant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Sunday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Sunday)" Label="Sunday" Color="Color.Info" />
+            </MudItem>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Monday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Monday)" Label="Monday" Color="Color.Info" />
+            </MudItem>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Tuesday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Tuesday)" Label="Tuesday" Color="Color.Info" />
+            </MudItem>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Wednesday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Wednesday)" Label="Wednesday" Color="Color.Info" />
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem xs="2" />
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Thursday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Thursday)" Label="Thursday" Color="Color.Info" />
+            </MudItem>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Friday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Friday)" Label="Friday" Color="Color.Info" />
+            </MudItem>
+            <MudItem xs="3">
+                <MudCheckBox Checked="@DayChecked[DayOfWeek.Saturday.GetHashCode()]" @onclick="() => OnCheckChanged(DayOfWeek.Saturday)" Label="Saturday" Color="Color.Info" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSubmitChanged())>
+            Submit
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Cancel" OnClick=@(() => OnClickHandler("Cancel"))>
+            Cancel
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Clear" OnClick=@(() => OnClickHandler("Clear"))>
+            Clear
+        </MudButton>
+    </DialogActions>
+</MudDialog>

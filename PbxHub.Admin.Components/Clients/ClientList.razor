@@ -1,0 +1,43 @@
+﻿@using PbxHub.Common
+
+@if (FilteredClients != null)
+{
+    <MudTable Items="@FilteredClients" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Client, object>(x => x.clientName)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Client, object>(x => x.keyEnabled)">Key Status</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Client, object>(x => x.administratorEmail)">Admin Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Client, object>(x => x.dedicatedPbx)">Dedicated PBX</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Client, object>(x => x.callRecordingHistory)">Call History</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Client, object>(x => x.callRecording)">Call Recording</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">
+                <MudLink Href=@("/clients/" + context.clientId) Underline="Underline.None" Color="Color.Info">
+                    @context.clientName
+                </MudLink>
+            </MudTd>
+            <MudTd DataLabel="Key Status">@context.keyEnabled</MudTd>
+            <MudTd DataLabel="Admin Email">@context.administratorEmail</MudTd>
+            <MudTd DataLabel="Dedicated PBX">@context.dedicatedPbx</MudTd>
+            <MudTd DataLabel="Call History">@context.callRecordingHistory</MudTd>
+            <MudTd DataLabel="Call Recording">@context.callRecording</MudTd>
+            <MudTd>
+                <MudLink Href=@("/clients/" + context.clientId) Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="(() => DeleteClient(context.clientId))" Underline="Underline.None" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+    <MudText Typo="Typo.overline" Color="Color.Info">No Data of Clients</MudText>
+}

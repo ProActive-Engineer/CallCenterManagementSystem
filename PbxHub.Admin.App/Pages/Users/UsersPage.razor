@@ -1,0 +1,92 @@
+﻿@page "/clients/{Id:int}/users"
+
+@using PbxHub.Admin.Components.Users
+@using PbxHub.Common
+
+@inject IUserService UserService
+@inject IClientService ClientService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="2">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add">
+            <MudLink Href="@NewUserURL" Underline="Underline.None" Color="Color.Info">New User</MudLink>
+        </MudButton>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4">
+        <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    </MudItem>
+    <MudItem xs="12">
+        <UserList Users="Users" OnDeleteUser="DeleteUser" SearchText="@SearchText" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<User> Users { get; set; }
+    private string NewUserURL { get; set; }
+    private string SearchText = "";
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Users";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        NewUserURL = "/users/new/" + Id;
+        try
+        {
+            Users = (await ClientService.GetUsers(Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        try
+        {
+            await UserService.Delete(userId);
+            Users = (await ClientService.GetUsers(Id)).ToList();
+            Snackbar.Add("The user was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The user was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the user.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the user.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

@@ -1,0 +1,38 @@
+﻿@using PbxHub.Common
+
+<MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">Members</MudText>
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+@if (QueueMembers != null)
+{
+    <MudTable Items="@QueueMembers" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<QueueMember, object>(x => x.fullName)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<QueueMember, object>(x => x.extension)">Extension</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<QueueMember, object>(x => x.priority)">Priority</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.fullName</MudTd>
+            <MudTd DataLabel="Extension">@context.extension</MudTd>
+            <MudTd DataLabel="Priority">@context.priority</MudTd>
+            <MudTd>
+                <MudLink @onclick="@(() => ShowQueueMemberEditDlg(context))" Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="@(() => DeleteQueueMember(context.queueMemberId))" Underline="Underline.None" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+            <MudGrid Justify="Justify.Center">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add" OnClick=@(() => ShowQueueMemeberAddDlg())>
+                        Add Member
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </PagerContent>
+    </MudTable>
+}

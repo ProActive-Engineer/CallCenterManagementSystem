@@ -1,0 +1,28 @@
+﻿@using PbxHub.Common
+
+<MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">Routing</MudText>
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+@if (DigitRoutes != null)
+{
+    <MudTable Items="@DigitRoutes" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<DigitRoute, object>(x => x.digit)">Digit</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<DigitRoute, object>(x => x.destinationType)">Destination Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<DigitRoute, object>(x => x.destinationName)">Destination</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="License Type">@context.digit</MudTd>
+            <MudTd DataLabel="Email">@context.destinationType</MudTd>
+            <MudTd DataLabel="DID">@context.destinationName</MudTd>
+            <MudTd>
+                <MudLink @onclick="@(() => ShowRoutingDlg(context))" Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}

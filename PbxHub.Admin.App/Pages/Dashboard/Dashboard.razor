@@ -1,0 +1,39 @@
+﻿@page "/dashboard"
+
+@attribute [Authorize(Roles = "Administrator")]
+
+@using PbxHub.Admin.Components.Dashboard
+
+<div class="row">
+    <div class="col">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" Class="mb-3" StartIcon="@Icons.Material.Outlined.Add">
+            New Title
+        </MudButton>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <BadgeCard BadgeText="Devices Online" BadgeValue="9" BadgeColor="#00ff00"></BadgeCard>
+    </div>
+    <div class="col-sm-3">
+        <BadgeCard BadgeText="Devices Offline" BadgeValue="2" BadgeColor="#ff0000"></BadgeCard>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <BadgeCard BadgeText="Inbound Calls" BadgeValue="200" BadgeColor="#ff0000"></BadgeCard>
+    </div>
+    <div class="col-sm-3">
+        <BadgeCard BadgeText="Outbound Calls" BadgeValue="500" BadgeColor="#ff0000"></BadgeCard>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Dashboard";
+    }
+}

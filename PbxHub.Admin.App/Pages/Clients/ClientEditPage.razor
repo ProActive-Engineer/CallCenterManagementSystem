@@ -1,0 +1,115 @@
+﻿@page "/clients/{Id:int}"
+@page "/clients/new"
+
+@attribute [Authorize]
+
+@using PbxHub.Admin.Components.Clients
+@using PbxHub.Common
+
+@inject IClientService ClientService
+@inject ISnackbar Snackbar
+
+<ClientEdit ClientModel="@Client" OnSaveClient="SaveClient" OnDiscardClient="DiscardClient" />
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Client Client { get; set; }
+    private bool IsEditPage { get => Id > 0; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Edit Client";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                Client = await ClientService.GetById(Id);
+            }
+            else
+            {
+                Client = new Client();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SaveClient(Client client)
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                await ClientService.Update(Id, client);
+            }
+            else
+            {
+                Client = await ClientService.CreateClient(client);
+            }
+            Snackbar.Add("The client was saved successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The client was saved successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to save the client.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to save the client.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DiscardClient()
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                Client = await ClientService.GetById(Id);
+            }
+            else
+            {
+                Client = new Client();
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

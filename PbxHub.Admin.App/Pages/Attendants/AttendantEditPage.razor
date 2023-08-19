@@ -1,0 +1,139 @@
+﻿@page "/attendants/{Id:int}"
+@page "/attendants/new/{ClientId:int}"
+
+@using PbxHub.Admin.Components.Attendants
+@using PbxHub.Common
+
+@inject IAttendantService AttendantService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="12" sm="12" md="8">
+        <AttendantSetting AttendantModel="AutoAttendant" TTSForGreeting="TtsForGreeting" PbxTimeZones="PbxTimeZones" OnSaveAutoAttendant="SaveAutoAttendant" OnDiscardAntoAttendant="DiscardAutoAttendant" />
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <AttendantRouting DigitRoutes="DigitRoutes" DestinationTypes="DestinationTypes" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int ClientId { get; set; }
+
+    private AutoAttendant AutoAttendant { get; set; }
+    private List<DigitRoute> DigitRoutes { get; set; }
+    private List<DestinationType> DestinationTypes { get; set; }
+    private List<PbxTimeZone> PbxTimeZones { get; set; }
+    private bool TtsForGreeting { get; set; }
+    private bool IsEditPage { get => Id > 0; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Edit AutoAttendant";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InitAttendantModel();
+        try
+        {
+            PbxTimeZones = (await AttendantService.GetTimeZones()).ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SaveAutoAttendant(AutoAttendant attendant)
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+
+            }
+            else
+            {
+                await AttendantService.CreateAutoAttendant(ClientId, attendant);
+            }
+            Snackbar.Add("The auto attendant was saved successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The auto attendant was saved successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to save the auto attendant.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to save the auto attendant.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DiscardAutoAttendant()
+    {
+        await InitAttendantModel();
+        StateHasChanged();
+    }
+
+    private async Task InitAttendantModel()
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                AutoAttendant = await AttendantService.GetAutoAttendant(Id);
+                DestinationTypes = (await AttendantService.GetDestinationTypes((int)AutoAttendant.clientId)).ToList();
+            }
+            else
+            {
+                AutoAttendant = await AttendantService.GetTemplate(ClientId);
+                DestinationTypes = (await AttendantService.GetDestinationTypes(ClientId)).ToList();
+            }
+
+            if (AutoAttendant != null)
+            {
+                TtsForGreeting = AutoAttendant.ttsForOpenGreeting;
+                DigitRoutes = AutoAttendant.routing;
+            }
+            else
+            {
+                TtsForGreeting = false;
+                DigitRoutes = new List<DigitRoute>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

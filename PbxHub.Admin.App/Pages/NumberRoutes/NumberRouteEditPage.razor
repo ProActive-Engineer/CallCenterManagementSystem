@@ -1,0 +1,32 @@
+﻿@page "/numberroutes/{Id:int}"
+@page "/numberroutes/new/{ClientId:int}"
+
+@using PbxHub.Admin.Components.NumberRoutes
+@using PbxHub.Common
+
+@inject INumberRouteService NumberRouteService
+
+<NumberRouteEdit NumberRouteModel="@NumberRoute" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int ClientId { get; set; }
+
+    private NumberRoute NumberRoute { get; set; }
+    private bool IsEditPage { get => Id > 0; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsEditPage)
+        {
+            NumberRoute = await NumberRouteService.GetNumberRoute(Id);
+        }
+        else
+        {
+            NumberRoute = new NumberRoute();
+        }
+    }
+}

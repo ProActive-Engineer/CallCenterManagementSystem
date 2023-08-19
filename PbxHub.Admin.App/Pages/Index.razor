@@ -1,0 +1,20 @@
+﻿@page "/"
+
+@layout MainLayout
+
+@attribute [Authorize]
+
+@using PbxHub.Admin.App.Pages.Dashboard
+
+<Dashboard />
+
+@code{
+    // Gets a reference to the MainLayout component
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Dashboard";
+    }
+}

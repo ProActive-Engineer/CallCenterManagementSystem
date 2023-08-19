@@ -1,0 +1,36 @@
+﻿<MudCard Class="login-card">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h5" Align="Align.Left" Color="Color.Info">PBX Login</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    <MudCardContent>
+        <MudForm @ref="form" @bind-IsValid="@success">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudTextField T="string" @bind-Value="model.email" Label="Email" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                  Required="true" RequiredError="User email is required!" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="model.password" Label="Password" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="@PasswordInput"
+                                  Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" AdornmentColor="Color.Info" OnAdornmentClick="OnShowPassword"
+                                  Required="true" RequiredError="The password is required!" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </MudCardContent>
+    <MudCardActions Style="justify-content: center;">
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Login" OnClick=@(() => OnSubmit())>
+            Login
+        </MudButton>
+    </MudCardActions>
+    <MudDivider DividerType="DividerType.Middle" Class="mt-3 separate-line" />
+    <MudGrid Justify="Justify.FlexStart" Class="pa-4">
+        <MudItem>
+            <MudLink Color="Color.Info">
+                Reset Password
+            </MudLink>
+        </MudItem>        
+    </MudGrid>
+</MudCard>

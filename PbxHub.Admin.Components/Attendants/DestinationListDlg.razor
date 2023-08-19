@@ -1,0 +1,42 @@
+﻿@using PbxHub.Common
+
+<MudDialog>
+    <TitleContent>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="6">
+                <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info"
+                              TextChanged="@(() => OnSearchHandler())" />
+            </MudItem>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.Middle" Class="mt-3 separate-line" />
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12">
+                @if (FilteredTypes != null)
+                {
+                    <MudTable Items="@FilteredTypes" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" MultiSelection="true" Style="width:100%;">
+                        <HeaderContent>
+                            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<DestinationType, object>(x => x.name)">Name</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Name">@context.name</MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                    </MudTable>
+                }
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnClickHandler("Assign"))>
+            Assign Selected
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Cancel" OnClick=@(() => OnClickHandler("Cancel"))>
+            Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

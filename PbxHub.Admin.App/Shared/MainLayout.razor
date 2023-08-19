@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Components
+
+@inherits LayoutComponentBase
+
+@inject ILocalStorageService StorageService
+
+@if (isLoaded)
+{
+    <CascadingValue Value="this">
+        <MudLayout>
+            <MudAppBar Elevation="1">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => NavMenuToggle())" />
+                <MudText Typo="Typo.h5" Class="ml-3">@Constant.APP_NAME</MudText>
+                <MudAppBarSpacer />
+                <MudBadge Content="@Notifications.Count" Color="Color.Error" Overlap="true" Class="mx-6 my-4">
+                    <MudIcon Size="Size.Medium" Icon="@Icons.Material.Outlined.Notifications" Color="Color.Info" @onclick="@((e) => NotificationsToggle())" />
+                </MudBadge>
+                <MudIconButton Size="Size.Medium" Icon="@Icons.Material.Outlined.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+            </MudAppBar>
+            <MudDrawer @bind-Open="_navMenuOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+                <NavMenu />
+            </MudDrawer>
+            <MudDrawer @bind-Open="_notificationsOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Anchor="Anchor.Right" Variant="@DrawerVariant.Temporary">
+                <NotificationList />
+            </MudDrawer>
+            <MudMainContent>
+                @*<MudText Typo="Typo.h5" Style="padding:20px 30px;">@NavHeader</MudText>*@
+                <MudPaper Elevation="3" Class="site-content">
+                    @Body
+                </MudPaper>
+            </MudMainContent>
+        </MudLayout>
+    </CascadingValue>
+}
+
+@code
+{
+    private bool isLoaded;
+
+    public string NavHeader = "Home";
+    public List<Notification> Notifications { get; set; }
+
+    private bool _navMenuOpen = true;
+    private bool _notificationsOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Notifications = await StorageService.GetItem<List<Notification>>(Constant.STORAGE_ITEM_NOTIFICATION_KEY);
+            if (Notifications == null)
+            {
+                Notifications = new List<Notification>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        isLoaded = true;
+        await base.OnInitializedAsync();
+    }
+
+    private void NavMenuToggle()
+    {
+        _navMenuOpen = !_navMenuOpen;
+    }
+
+    private void NotificationsToggle()
+    {
+        _notificationsOpen = !_notificationsOpen;
+    }
+
+    public async Task AddNotification(Notification notification)
+    {
+        Notifications.Add(notification);
+        await StorageService.SetItem(Constant.STORAGE_ITEM_NOTIFICATION_KEY, Notifications);
+    }
+
+    public async Task DeleteNotification(Notification notification)
+    {
+        Notifications.Remove(notification);
+        await StorageService.SetItem(Constant.STORAGE_ITEM_NOTIFICATION_KEY, Notifications);
+    }
+}

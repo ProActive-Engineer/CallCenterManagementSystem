@@ -1,0 +1,44 @@
+﻿@using PbxHub.Common
+
+@if (FilteredNumberRoutes != null)
+{
+    <MudTable Items="@FilteredNumberRoutes" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<NumberRoute, object>(x => x.phoneNumber)">Phone Number</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.callerId)">Caller ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.userFullName)">User Destination</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.destinationType)">Destination Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.destinationName)">Destination</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.description)">Description</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<NumberRoute, object>(x => x.callerIdPoolName)">Caller ID Pool</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Phone Number">
+                <MudLink Href=@("/numberroutes/" + context.numberRouteId) Underline="Underline.None" Color="Color.Info">
+                    @context.phoneNumber
+                </MudLink>
+            </MudTd>
+            <MudTd DataLabel="Caller ID">@context.callerId</MudTd>
+            <MudTd DataLabel="User Destination">@context.userFullName</MudTd>
+            <MudTd DataLabel="Destination Type">@context.destinationType</MudTd>
+            <MudTd DataLabel="Destination">@context.destinationName</MudTd>
+            <MudTd DataLabel="Description">@context.description</MudTd>
+            <MudTd DataLabel="Caller ID Pool">@context.callerIdPoolName</MudTd>
+            <MudTd>
+                <MudLink Href=@("/numberroutes/" + context.numberRouteId) Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="(() => DeleteNumberRoute(context.numberRouteId))" Underline="Underline.None" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+    <MudText Typo="Typo.overline" Color="Color.Info">No Data of PhoneNumber Routes</MudText>
+}

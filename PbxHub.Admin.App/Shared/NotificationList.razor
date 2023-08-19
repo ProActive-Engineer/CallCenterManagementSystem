@@ -1,0 +1,46 @@
+﻿<MudDrawerHeader>
+    <MudText Typo="Typo.h5" Class="mt-2 mr-3">Notifications</MudText>
+    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Outlined.Delete" />
+</MudDrawerHeader>
+<MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+<MudDrawerContainer Class="mt-2 pa-1">
+    @foreach (var notification in Layout.Notifications)
+    {
+        <MudCard Outlined="true" Class="mb-1">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.overline" Color="@GetColor(notification.Type)">@notification.NotifyTime.ToString("yyyy-MM-dd HH:mm")</MudText>
+                    <MudText Typo="Typo.body1" Color="@GetColor(notification.Type)">@notification.Message</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Close" Color="Color.Default" @onclick="@(() => Layout.DeleteNotification(notification))" />
+                </CardHeaderActions>
+            </MudCardHeader>
+        </MudCard>
+    }
+</MudDrawerContainer>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    private Color GetColor(NotificationType type)
+    {
+        Color color = Color.Default;
+        switch(type)
+        {
+            case NotificationType.Success:
+                color = Color.Success;
+                break;
+            case NotificationType.Error:
+                color = Color.Error;
+                break;
+            case NotificationType.Warning:
+                color = Color.Warning;
+                break;
+            default:
+                break;
+        }
+        return color;
+    }
+}

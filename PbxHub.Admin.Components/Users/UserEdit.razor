@@ -1,0 +1,161 @@
+﻿@if (UserModel != null && UserModel.userId > 0)
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@UserModel.firstName @UserModel.lastName</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">New User</MudText>
+}
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+
+@if (UserModel != null)
+{
+    <MudCard Style="width:100%;">
+        <MudCardContent>
+            <MudForm>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.firstName" Label="First Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.FollowMesStr" Label="Follow Me#" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.lastName" Label="Last Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudNumericField @bind-Value="UserModel.followMeDelay" Label="Follow Me Delay" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                         Adornment="Adornment.End" AdornmentText="Second" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.email" Label="Email" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudNumericField @bind-Value="UserModel.ringTime" Label="Ring Time" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                         Adornment="Adornment.End" AdornmentText="Second" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.extension" Label="Extension" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.phoneType" Label="Phone Type" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.DidListStr" Label="DID" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info" OnAdornmentClick="ShowDidListDlg" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.sipUserName" Label="SIP User Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudSelect T="string" Label="License Type" Dense="true" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="UserModel.licenseTypeName">
+                            @foreach (var type in LicenseTypes)
+                            {
+                                <MudSelectItem Value="@type.name">@type.name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.sipPassword" Label="SIP Password" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="@MudBlazor.InputType.Password"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info" OnAdornmentClick="ShowChangeSipPwdDlg" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.otherSetting" Label="Other Setting" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudTextField @bind-Value="UserModel.portalPassword" Label="Portal Password" Margin="Margin.Dense" Variant="Variant.Outlined" InputType="@MudBlazor.InputType.Password"
+                                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info" OnAdornmentClick="ShowChangePortalPwdDlg" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="3" />
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@UserModel.voiceMail" Label="VoiceMail" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox Checked="false" Label="DND Enabled" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@UserModel.enabled" Label="Enabled" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="3" />
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="3" />
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@UserModel.followMe" Label="FollowMe" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@UserModel.dndAllowed" Label="DND Allowed" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox Checked="false" Label="CallerID DID" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="3" />
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="3" />
+                    <MudItem xs="2">
+                        <MudCheckBox Checked="false" Label="Default Label" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox @bind-Checked="@UserModel.recordCalls" Label="Record Calls" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="2">
+                        <MudCheckBox Checked="false" Label="Portal Access" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="3" />
+                </MudGrid>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudGrid Spacing="6" Justify="Justify.Center">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSaveHandler())>
+                        Submit Changes
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Clear" OnClick=@(() => OnDiscardHandler())>
+                        Discard Changes
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete" OnClick=@(() => OnDeleteHandler())>
+                        Delete User
+                    </MudButton>
+                </MudItem>
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Outlined.Send" OnClick=@(() => OnSendMailHandler())>
+                        Send Welcome Email
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardActions>
+    </MudCard>
+
+    <MudMessageBox @ref="MBox" Title="Delete Confirmation">
+        <MessageContent>
+            @($"Are you sure you want to delete the user \"{UserModel.firstName} {UserModel.lastName}\"?")
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete">Delete</MudButton>
+        </YesButton>
+        <CancelButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Cancel">Cancel</MudButton>
+        </CancelButton>
+    </MudMessageBox>
+}

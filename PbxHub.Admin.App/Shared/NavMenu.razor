@@ -1,0 +1,95 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@using System.Threading
+@using PbxHub.Common
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IClientService ClientService
+@inject NavigationManager Nav
+
+<MudNavMenu Class="mud-width-full" Style="margin-top:30px;">
+    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Outlined.Dashboard">Dashboard</MudNavLink>
+    <MudNavGroup Title="Clients" Icon="@Icons.Material.Outlined.Business" @onclick=@(() => GotoClients()) @bind-Expanded="IsClientsExpanded">
+        @if (Clients != null)
+        {
+            @foreach (var client in Clients)
+            {
+                <MudNavGroup Title="@client.clientName" @onclick=@(() => GotoClient(client.clientId)) @bind-Expanded="@IsClientExpands[client.clientId]"
+                             Icon="@Icons.Material.Outlined.BusinessCenter">
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/users")" Icon="@Icons.Material.Outlined.Group" >Users</MudNavLink>
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/queues")" Icon="@Icons.Material.Outlined.Queue">Queues</MudNavLink>
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/attendants")" Icon="@Icons.Material.Outlined.Assistant">Auto Attendants</MudNavLink>
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/numberroutes")" Icon="@Icons.Material.Outlined.Dialpad">PhoneNumber Routes</MudNavLink>
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/callflows")" Icon="@Icons.Material.Outlined.Call">Call Flows</MudNavLink>
+                    <MudNavLink Href="@("/clients/"+client.clientId+"/reportings")"  Icon="@Icons.Material.Outlined.Pageview">Reporting</MudNavLink>
+                </MudNavGroup>
+            }
+        }
+    </MudNavGroup>
+    <MudNavLink Href="/maintenance" Icon="@Icons.Material.Outlined.Build">Maintenance</MudNavLink>
+</MudNavMenu>
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public List<Client> Clients { get; set; }
+
+    private bool IsClientsExpanded { get; set; }
+    private bool PrevClientsExpanded { get; set; }
+    private Dictionary<int, bool> IsClientExpands { get; set; } = new Dictionary<int, bool>();
+    private Dictionary<int, bool> PrevClientExpands { get; set; } = new Dictionary<int, bool>();
+    private static SemaphoreSlim processCallsSemaphore = new SemaphoreSlim(1, 1);
+
+    private void GotoClients()
+    {
+        if (IsClientsExpanded != PrevClientsExpanded)
+        {
+            Nav.NavigateTo($"{Nav.BaseUri}clients");
+            PrevClientsExpanded = IsClientsExpanded;
+        }
+    }
+
+    private void GotoClient(int clientId)
+    {
+        if (IsClientExpands[clientId] != PrevClientExpands[clientId])
+        {
+            Nav.NavigateTo($"{Nav.BaseUri}clients/{clientId}");
+            PrevClientExpands[clientId] = IsClientExpands[clientId];
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await processCallsSemaphore.WaitAsync();
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        try
+        {
+            if (user.IsInRole(Helpers.AuthLevel.Administrator.ToString()))
+            {
+                Clients = (await ClientService.GetAll()).ToList();
+                IsClientsExpanded = false;
+                PrevClientsExpanded = false;
+                foreach (var client in Clients)
+                {
+                    IsClientExpands.Add(client.clientId, false);
+                    PrevClientExpands.Add(client.clientId, false);
+                }
+            }
+            else
+            {
+            }
+        }
+        catch (Exception ex)
+        {
+            StateHasChanged();
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            processCallsSemaphore.Release();
+        }
+    }
+}

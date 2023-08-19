@@ -1,0 +1,280 @@
+﻿@page "/queues/{Id:int}"
+@page "/queues/new/{ClientId:int}"
+
+@using PbxHub.Admin.Components.Queues
+@using PbxHub.Common
+
+@inject IQueueService QueueService
+@inject IQueueMemberService QueueMemberService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="12" sm="12" md="4">
+        <QueueSetting QueueModel="@Queue" QueueTypes="@QueueTypes" OnSaveQueue="SaveQueue" />
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <QueueMemberList QueueMembers="@QueueMembers" QueueEligibleMembers="@QueueEligibleMembers" OnQueueMemberDeleted="QueueMemberDelete" 
+                         OnQueueMembersAdded="QueueMembersAdd" OnQueueMemberSaved="QueueMemberSave" />
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <QueueSupervisorList QueueSupervisors="@QueueSupervisors" QueueEligibleSupervisors="@QueueEligibleSupervisors" OnQueueSupervisorDeleted="QueueSupervisorDelete" 
+                             OnQueueSupervisorsAdded="QueueSupervisorsAdd" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int ClientId { get; set; }
+
+    private Queue Queue { get; set; }
+    private List<QueueType> QueueTypes { get; set; }
+    private List<QueueMember> QueueMembers { get; set; }
+    private List<User> QueueEligibleMembers { get; set; }
+    private List<QueueSupervisor> QueueSupervisors { get; set; }
+    private List<User> QueueEligibleSupervisors { get; set; }
+    private bool IsEditPage { get => Id > 0; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Edit Queue";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InitQueueModel();
+    }
+
+    private async Task InitQueueModel()
+    {
+        try
+        {
+            QueueTypes = (await QueueService.GetQueueTypes()).ToList();
+            if (IsEditPage)
+            {
+                Queue = await QueueService.GetById(Id);
+                QueueMembers = (await QueueService.GetMembers(Id)).ToList();
+                QueueEligibleMembers = (await QueueService.GetEligibleMembers(Id)).ToList();
+                QueueSupervisors = (await QueueService.GetSupervisors(Id)).ToList();
+                QueueEligibleSupervisors = (await QueueService.GetEligibleSupervisors(Id)).ToList();
+            }
+            else
+            {
+                Queue = new Queue();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SaveQueue(Queue queue)
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                await QueueService.Update(Id, queue);
+            }
+            else
+            {
+                await QueueService.AddNewQueue(ClientId, queue);
+            }
+            Snackbar.Add("The queue was saved successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue was saved successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the queue.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the queue.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task QueueMemberDelete(int memberId)
+    {
+        try
+        {
+            await QueueService.DeleteMember(memberId);
+            await UpdatePage("members");
+            Snackbar.Add("The queue member was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue member was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the queue member.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the queue member.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task QueueMembersAdd(List<User> members)
+    {
+        try
+        {
+            await QueueService.AddEligibleMembers(Id, members.ToArray<User>());
+            await UpdatePage("members");
+            Snackbar.Add("The queue members was added successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue members was added successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to add the queue members.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to add the queue members.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task QueueMemberSave(QueueMember member)
+    {
+        try
+        {
+            await QueueMemberService.Update(member.queueMemberId, member);
+            Snackbar.Add("The queue member was saved successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue member was saved successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to save the queue member.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to save the queue member.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task QueueSupervisorDelete(int supervisorId)
+    {
+        try
+        {
+            await QueueService.DeleteSupervisor(supervisorId);
+            await UpdatePage("supervisors");
+            Snackbar.Add("The queue supervisor was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue supervisor was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the queue supervisor.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the queue supervisor.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task QueueSupervisorsAdd(List<User> supervisors)
+    {
+        try
+        {
+            await QueueService.AddEligibleSupervisors(Id, supervisors.ToArray<User>());
+            await UpdatePage("supervisors");
+            Snackbar.Add("The queue supervisors was added successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue supervisors was added successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to add the queue supervisors.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to add the queue supervisors.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task UpdatePage(string type)
+    {
+        try
+        {
+            if (type == "members")
+            {
+                QueueMembers = (await QueueService.GetMembers(Id)).ToList();
+                QueueEligibleMembers = (await QueueService.GetEligibleMembers(Id)).ToList();
+            }
+            if (type == "supervisors")
+            {
+                QueueSupervisors = (await QueueService.GetSupervisors(Id)).ToList();
+                QueueEligibleSupervisors = (await QueueService.GetEligibleSupervisors(Id)).ToList();
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

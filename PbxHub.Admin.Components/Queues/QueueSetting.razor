@@ -1,0 +1,83 @@
+﻿@if (QueueModel != null && QueueModel.queueId > 0)
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@QueueModel.queueName</MudText>
+}
+else
+{
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">New Queue</MudText>
+}
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-3 mb-3 separate-line" />
+
+@if (QueueModel != null)
+{
+    <MudCard Style="width:100%;">
+        <MudCardContent>
+            <MudForm>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField @bind-Value="QueueModel.queueName" Label="Queue Name" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField @bind-Value="QueueModel.appendCallerIdnameWith" Label="Append Caller Id" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudNumericField @bind-Value="QueueModel.maxQueueWait" Label="Max Queue Wait" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                         Adornment="Adornment.End" AdornmentText="Second" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudSelect T="string" Label="Queue Type" Dense="true" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="QueueModel.queueTypeName">
+                            @foreach (var type in QueueTypes)
+                            {
+                                <MudSelectItem Value="@type.queueTypeName">@type.queueTypeName</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudNumericField @bind-Value="QueueModel.noAnswerAdvanceTimer" Label="No Answer Time" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                         Adornment="Adornment.End" AdornmentText="Second" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudNumericField @bind-Value="QueueModel.wrapLength" Label="Wrap Timer" Margin="Margin.Dense" Variant="Variant.Outlined"
+                                         Adornment="Adornment.End" AdornmentText="Second" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="8">
+                        <MudTextField @bind-Value="QueueModel.didStr" Label="DID" Margin="Margin.Dense" Variant="Variant.Outlined" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="4" Class="mb-1">
+                        <MudCheckBox @bind-Checked="@QueueModel.allowFollowMe" Label="Follow Me" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="4" Class="mb-1">
+                        <MudCheckBox @bind-Checked="@QueueModel.allowCallWaiting" Label="Call Waiting" Color="Color.Info" />
+                    </MudItem>
+                    <MudItem xs="4" Class="mb-1">
+                        <MudCheckBox @bind-Checked="@QueueModel.wrapEnabled" Label="Wrap Enabled" Color="Color.Info" />
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudGrid Spacing="6" Justify="Justify.Center">
+                <MudItem>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnSaveHandler())>
+                        Submit Changes
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudCardActions>
+    </MudCard>
+}

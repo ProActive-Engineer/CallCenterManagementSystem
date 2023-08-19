@@ -1,0 +1,33 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">Digit @RoutingModel.digit Routing</MudText>
+            </MudItem>
+        </MudGrid>
+        <MudDivider DividerType="DividerType.Middle" Class="mt-3 separate-line" />
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="@RoutingModel.destinationType" Label="Type" Margin="Margin.Dense" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="@RoutingModel.destinationName" Label="Destination" Margin="Margin.Dense" Variant="Variant.Outlined"
+                              Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Edit" AdornmentColor="Color.Info"
+                              OnAdornmentClick=@(() => ShowDestinationListDlg()) />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="@RoutingModel.transferMessage" Label="Transfer Message" Margin="Margin.Dense" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnClickHandler("Submit"))>
+            Submit Changes
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Cancel" OnClick=@(() => OnClickHandler("Cancel"))>
+            Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

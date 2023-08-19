@@ -1,0 +1,55 @@
+﻿@using PbxHub.Common
+
+@if (FilteredQueues != null)
+{
+    <MudTable Items="@FilteredQueues" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Queue, object>(x => x.queueName)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Queue, object>(x => x.appendCallerIdnameWith)">CallerID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Queue, object>(x => x.didStr)">DID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Queue, object>(x => x.queueTypeName)">QueueType</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Queue, object>(x => x.allowFollowMe)">Allow Follow Me</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Queue, object>(x => x.allowCallWaiting)">Allow Call Waiting</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">
+                <MudLink Href=@("/queues/" + @context.queueId) Underline="Underline.None" Color="Color.Info">
+                    @context.queueName
+                </MudLink>
+            </MudTd>
+            <MudTd DataLabel="CallerID">@context.appendCallerIdnameWith</MudTd>
+            <MudTd DataLabel="DID">@context.didStr</MudTd>
+            <MudTd DataLabel="QueueType">@context.queueTypeName</MudTd>
+            <MudTd DataLabel="Allow Follow Me">@context.allowFollowMe</MudTd>
+            <MudTd DataLabel="Allow Call Waiting">@context.allowCallWaiting</MudTd>
+            <MudTd>
+                <MudLink Href=@("/queues/" + @context.queueId) Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="@(() => OnDeleteHandlerAsync(context.queueId))" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <MudMessageBox @ref="MBox" Title="Delete Confirmation">
+        <MessageContent>
+            @($"Are you sure you want to delete the queue \"{SelectedQueue.queueName}\"?")
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete">Delete</MudButton>
+        </YesButton>
+        <CancelButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Cancel">Cancel</MudButton>
+        </CancelButton>
+    </MudMessageBox>
+}
+else
+{
+    <MudText Typo="Typo.overline" Color="Color.Info">No Data of Queues</MudText>
+}

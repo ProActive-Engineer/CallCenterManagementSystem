@@ -1,0 +1,51 @@
+﻿@using PbxHub.Common
+
+@if (FilteredAttendants != null)
+{
+    <MudTable Items="@FilteredAttendants" Dense="false" Hover="true" Bordered="false" Striped="false" FixedHeader="true" Style="width:100%;">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<AutoAttendant, object>(x=>x.planName)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AutoAttendant, object>(x => x.ttsOpenGreetingType)">TTS Open Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AutoAttendant, object>(x => x.ttsClosedGreetingType)">TTS Closed Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AutoAttendant, object>(x => x.timeBased)">Time Based</MudTableSortLabel></MudTh>
+            <MudTh />
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">
+                <MudLink Href=@("/attendants/" + context.id) Underline="Underline.None" Color="Color.Info">
+                    @context.planName
+                </MudLink>
+            </MudTd>
+            <MudTd DataLabel="TTS Open Type">@context.ttsOpenGreetingType</MudTd>
+            <MudTd DataLabel="TTS Closed Type">@context.ttsClosedGreetingType</MudTd>
+            <MudTd DataLabel="Time Based">@context.timeBased</MudTd>
+            <MudTd>
+                <MudLink Href=@("/attendants/" + context.id) Underline="Underline.None" Color="Color.Info">
+                    <MudIcon Icon="@Icons.Material.Outlined.Edit" />
+                </MudLink>
+                <MudLink @onclick="@(() => OnDeleteHandler(context))" Underline="Underline.None" Color="Color.Error">
+                    <MudIcon Icon="@Icons.Material.Outlined.Delete" />
+                </MudLink>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <MudMessageBox @ref="MBox" Title="Delete Confirmation">
+        <MessageContent>
+            @($"Are you sure you want to delete the auto attendant \"{SelectedAttendant.planName}\"?")
+        </MessageContent>
+        <YesButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Delete">Delete</MudButton>
+        </YesButton>
+        <CancelButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Cancel">Cancel</MudButton>
+        </CancelButton>
+    </MudMessageBox>
+}
+else
+{
+    <MudText Typo="Typo.overline" Color="Color.Info">No Data of Auto Attendants</MudText>
+}

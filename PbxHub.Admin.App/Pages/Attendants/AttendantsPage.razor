@@ -1,0 +1,91 @@
+﻿@page "/clients/{Id:int}/attendants"
+
+@using PbxHub.Admin.Components.Attendants
+@using PbxHub.Common
+
+@inject IAttendantService AttendantService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="2">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add">
+            <MudLink Href="@NewURL" Underline="Underline.None" Color="Color.Info">New Attendant</MudLink>
+        </MudButton>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4">
+        <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    </MudItem>
+    <MudItem xs="12">
+        <AttendantList Attendants="AutoAttendants" OnDeleteAttendant="DeleteAttendant" SearchText="@SearchText" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<AutoAttendant> AutoAttendants { get; set; }
+    private string NewURL { get; set; }
+    private string SearchText = "";
+
+    protected override void OnInitialized()
+    {
+        NewURL = "/attendants/new/" + Id;
+        Layout.NavHeader = "AutoAttendants";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            AutoAttendants = (await AttendantService.GetAutoAttendants(Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DeleteAttendant(int attendantId)
+    {
+        try
+        {
+            await AttendantService.Delete(attendantId, Id);
+            AutoAttendants = (await AttendantService.GetAutoAttendants(Id)).ToList();
+            Snackbar.Add("The auto attendant was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The auto attendant was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the auto attendant.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the auto attendant.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

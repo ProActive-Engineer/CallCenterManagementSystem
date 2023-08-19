@@ -1,0 +1,25 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">@MemberName</MudText>
+            </MudItem>
+        </MudGrid>        
+        <MudDivider DividerType="DividerType.Middle" Class="mt-3 separate-line" />
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudTextField @bind-Value="@MemberPriority" Label="Priority" Margin="Margin.Dense" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Outlined.Save" OnClick=@(() => OnClickHandler("Submit"))>
+            Submit Changes
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Outlined.Cancel" OnClick=@(() => OnClickHandler("Cancel"))>
+            Cancel
+        </MudButton>
+    </DialogActions>
+</MudDialog>

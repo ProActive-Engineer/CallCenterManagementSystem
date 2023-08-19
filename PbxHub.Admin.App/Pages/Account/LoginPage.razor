@@ -1,0 +1,28 @@
+﻿@layout Layout
+@page "/account/login"
+
+@using PbxHub.Admin.Components.Account
+@using System
+@using Microsoft.AspNetCore.Components
+@using PbxHub.Common
+@using PbxHub.Admin.App.Services
+
+@inject IAccountService AccountService
+@inject NavigationManager NavigationManager
+
+<LoginForm OnLogined="Login"></LoginForm>
+
+@code {
+    private async void Login(LoginInfo model)
+    {
+        try
+        {
+            await AccountService.Login(model);
+            NavigationManager.NavigateTo("/dashboard");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}

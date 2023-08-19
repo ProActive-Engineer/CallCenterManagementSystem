@@ -1,0 +1,152 @@
+﻿@page "/users/{Id:int}"
+@page "/users/new/{ClientId:int}"
+
+@using PbxHub.Admin.Components.Users
+@using PbxHub.Common
+
+@inject IUserService UserService
+@inject IClientService ClientService
+@inject ISnackbar Snackbar
+
+<UserEdit UserModel="@User" LicenseTypes="@LicenseTypes" OnSaveUser="SaveUser" OnDiscardUser="DiscardUser" OnDeleteUser="DeleteUser" />
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public int ClientId { get; set; }
+
+    private User User { get; set; }
+    private bool IsEditPage { get => Id > 0; }
+    private List<LicenseType> LicenseTypes { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.NavHeader = "Edit User";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            LicenseTypes = (await UserService.GetLicenseType()).ToList();
+            if (IsEditPage)
+            {
+                User = await UserService.GetById(Id);
+            }
+            else
+            {
+                User = new User();
+            }
+            if (User.licenseType == null)
+            {
+                User.licenseType = new LicenseType();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task SaveUser(User user)
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                await UserService.Update(Id, user);
+            }
+            else
+            {
+                await ClientService.AddUser(ClientId, user);
+            }
+            Snackbar.Add("The user was saved successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The user was saved successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to save the user.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to save the user.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+    private async Task DiscardUser()
+    {
+        try
+        {
+            if (IsEditPage)
+            {
+                User = await UserService.GetById(Id);
+            }
+            else
+            {
+                User = new User();
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        try
+        {
+            await UserService.Delete(userId);
+            User = new User();
+            Snackbar.Add("The user was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The user was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the user.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the user.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

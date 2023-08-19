@@ -1,0 +1,168 @@
+[
+  {
+    "attendantId": 1,
+    "attendantName": "Main Line",
+    "ttsForGreeting": true,
+    "openGreeting": "Thank you for Calling Test co.\nIf you know your parties Extention, you may dial it at any time.\nFor Saled Press 1.\nFor Accounting Press 2.\nFor Customer Service Press 3.\nTo reach the operator Dial 0.",
+    "closedGreeting": "Thank you for Calling Test co.\nOur offices are currently closed.\nIf you know your parties Extension, you may dial it at Any time.\nOr if you would like to leave a message, please remain on the line.",
+    "did": "757-455-4555",
+    "timeBased": true,
+    "routings": [
+      {
+        "routingId": 1,
+        "digit": "#",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 2,
+        "digit": "*",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 3,
+        "digit": "0",
+        "destinationType": "Queue",
+        "destination": "Operator"
+      },
+      {
+        "routingId": 4,
+        "digit": "1",
+        "destinationType": "Queue",
+        "destination": "Sales"
+      },
+      {
+        "routingId": 5,
+        "digit": "2",
+        "destinationType": "AutoAttendant",
+        "destination": "Accounting"
+      },
+      {
+        "routingId": 6,
+        "digit": "3",
+        "destinationType": "Queue",
+        "destination": "Customer Ser"
+      },
+      {
+        "routingId": 7,
+        "digit": "4",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 8,
+        "digit": "5",
+        "destinationType": "User",
+        "destination": "User1"
+      },
+      {
+        "routingId": 9,
+        "digit": "6",
+        "destinationType": "Call Flow",
+        "destination": "NightFlow"
+      },
+      {
+        "routingId": 10,
+        "digit": "7",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 11,
+        "digit": "8",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 12,
+        "digit": "9",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      }
+    ]
+  },
+  {
+    "attendantId": 2,
+    "attendantName": "Accounting",
+    "ttsForGreeting": true,
+    "openGreeting": "Thank you for Calling Test co.\nIf you know your parties Extention, you may dial it at any time.\nFor Saled Press 1.\nFor Accounting Press 2.\nFor Customer Service Press 3.\nTo reach the operator Dial 0.",
+    "closedGreeting": "Thank you for Calling Test co.\nOur offices are currently closed.\nIf you know your parties Extension, you may dial it at Any time.\nOr if you would like to leave a message, please remain on the line.",
+    "did": "757-455-4555",
+    "timeBased": true,
+    "routings": [
+      {
+        "routingId": 1,
+        "digit": "#",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 2,
+        "digit": "*",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 3,
+        "digit": "0",
+        "destinationType": "Queue",
+        "destination": "Operator"
+      },
+      {
+        "routingId": 4,
+        "digit": "1",
+        "destinationType": "Queue",
+        "destination": "Sales"
+      },
+      {
+        "routingId": 5,
+        "digit": "2",
+        "destinationType": "AutoAttendant",
+        "destination": "Accounting"
+      },
+      {
+        "routingId": 6,
+        "digit": "3",
+        "destinationType": "Queue",
+        "destination": "Customer Ser"
+      },
+      {
+        "routingId": 7,
+        "digit": "4",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 8,
+        "digit": "5",
+        "destinationType": "User",
+        "destination": "User1"
+      },
+      {
+        "routingId": 9,
+        "digit": "6",
+        "destinationType": "Call Flow",
+        "destination": "NightFlow"
+      },
+      {
+        "routingId": 10,
+        "digit": "7",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 11,
+        "digit": "8",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      },
+      {
+        "routingId": 12,
+        "digit": "9",
+        "destinationType": "NotValid",
+        "destination": "N/A"
+      }
+    ]
+  }
+]

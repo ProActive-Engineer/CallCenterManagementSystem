@@ -1,0 +1,94 @@
+﻿@page "/clients/{Id:int}/queues"
+
+@attribute [Authorize]
+
+@using PbxHub.Admin.Components.Queues
+@using PbxHub.Common
+
+@inject IClientService ClientService
+@inject IQueueService QueueService
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="2">
+        <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Outlined.Add">
+            <MudLink Href="@NewURL" Underline="Underline.None" Color="Color.Info">New Queue</MudLink>
+        </MudButton>
+    </MudItem>
+    <MudItem xs="6" />
+    <MudItem xs="4">
+        <MudTextField @bind-Value="@SearchText" Placeholder="Search..." Variant="Variant.Outlined" Margin="Margin.Dense" Immediate="true"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Outlined.Search" AdornmentColor="Color.Info" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDivider DividerType="DividerType.Middle" Class="separate-line" />
+    </MudItem>
+    <MudItem xs="12">
+        <QueueList Queues="@Queues" SearchText="@SearchText" OnDeleteQueue="DeleteQueue" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<Queue> Queues { get; set; }
+    private string SearchText = "";
+    private string NewURL { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NewURL = "/queues/new/" + Id;
+        Layout.NavHeader = "Queues";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            Queues = (await ClientService.GetQueues(Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("The error has occurred in the server.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The error has occurred in the server.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task DeleteQueue(int queueId)
+    {
+        try
+        {
+            await QueueService.Delete(queueId);
+            Queues = (await ClientService.GetQueues(Id)).ToList();
+            Snackbar.Add("The queue was deleted successfully.", Severity.Success);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "The queue was deleted successfully.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Success
+            });
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Failed to delete the queue.", Severity.Error);
+            await Layout.AddNotification(new Notification
+            {
+                Message = "Failed to delete the queue.",
+                NotifyTime = DateTime.Now,
+                Type = NotificationType.Error
+            });
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
